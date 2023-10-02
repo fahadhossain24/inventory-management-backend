@@ -23,12 +23,12 @@ const productSchema = mongoose.Schema({
         type: String,
         required: [true, 'Product unit is required'],
         enum: {
-            value: ['kg', 'litre', 'pics'],
+            values: ['kg', 'litre', 'pics'],
             message: 'Unit value cant be {VALUE}, must be use kg/litre/pics'
         }
     },
     quantity: {
-        type: String,
+        type: Number,
         required: [true, 'Product quantity is required'],
         min: [0, 'Quantity can not be negative'],
         validate: {
@@ -47,7 +47,7 @@ const productSchema = mongoose.Schema({
         type: String,
         required: [true, 'Product status is required'],
         enum: {
-            value: ['in-stock', 'out-of-stock', 'discontinued'],
+            values: ['in-stock', 'out-of-stock', 'discontinued'],
             message: 'Status can not be {VALUE}'
         }
     },
@@ -59,17 +59,17 @@ const productSchema = mongoose.Schema({
     //     type: Date,
     //     default: Date.now()
     // },
-    supplier: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Supplier'
-    },
-    categories: [{
-        name: {
-            type: String,
-            required: [true, 'Category name is required']
-        },
-        _id: mongoose.Schema.Types.ObjectId
-    }]
+    // supplier: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Supplier'
+    // },
+    // categories: [{
+    //     name: {
+    //         type: String,
+    //         required: [true, 'Category name is required']
+    //     },
+    //     _id: mongoose.Schema.Types.ObjectId
+    // }]
 
 }, {timestamps: true})
 
