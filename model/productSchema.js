@@ -73,6 +73,13 @@ const productSchema = mongoose.Schema({
 
 }, {timestamps: true})
 
+productSchema.pre('save', function(next){
+    if(this.quantity === 0){
+        this.status = 'out-of-stock';
+    }
+    next();
+})
+
 
 // create Product model..........
 const Product = mongoose.model('Product', productSchema);
