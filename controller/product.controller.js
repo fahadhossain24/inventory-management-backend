@@ -1,15 +1,15 @@
-const Product = require("../model/productSchema")
+const Product = require("../model/productSchema");
+const productServices = require("../services/product.services");
 
 // save product
 exports.saveProduct = async (req, res, next) => {
     // we can insert data to the database using two ways. first save() method and second create()
     try {
-        const product = new Product(req.body)
-        const result = await product.save();
+        const product = await productServices.createProductService(req.body);
         res.status(200).json({
             status: 'success',
             message: 'Product successfully saved',
-            data: result
+            data: product
         })
     } catch (err) {
         res.status(400).json({
@@ -24,11 +24,11 @@ exports.saveProduct = async (req, res, next) => {
 
 exports.getProduct = async(req, res, next) => {
     try{
-        const result = await Product.find({})
+        const products = await productServices.getProductService();
         res.status(200).json({
             status: 'success',
             message: 'data successfully retrived',
-            data: result,
+            data: products,
         })
     }catch(err){
         res.status(400).json({
