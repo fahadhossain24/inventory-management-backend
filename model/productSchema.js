@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const validator = require('validator')
+const {ObjectId} = mongoose.Schema.Types;
 
 // define product schema...........
 const productSchema = mongoose.Schema({
@@ -54,7 +56,7 @@ const productSchema = mongoose.Schema({
             required: true,
         },
         id:{
-            type: Object,
+            type: ObjectId,
             ref: 'Brand',
             required: true,
         }
@@ -62,12 +64,12 @@ const productSchema = mongoose.Schema({
 
 }, {timestamps: true})
 
-productSchema.pre('save', function(next){
-    if(this.quantity === 0){
-        this.status = 'out-of-stock';
-    }
-    next();
-})
+// productSchema.pre('save', function(next){
+//     if(this.quantity === 0){
+//         this.status = 'out-of-stock';
+//     }
+//     next();
+// })
 
 
 const Product = mongoose.model('Product', productSchema);

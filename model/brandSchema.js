@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const ObjectId = mongoose.Schema.Types;
+const {ObjectId} = mongoose.Schema.Types;
 
 
 const brandSchema = mongoose.Schema({
@@ -15,13 +15,11 @@ const brandSchema = mongoose.Schema({
     description: String,
     email: {
         type: String,
-        unique: true,
         validate: [validator.isEmail, 'Please provide a valid email'],
         lowercase: true,
     },
     website: {
         type: String,
-        unique: true,
         validate: [validator.isURL, 'please provide a valid url']
     },
     location: String,

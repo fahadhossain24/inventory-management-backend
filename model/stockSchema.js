@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const ObjectId = mongoose.Schema.Types
+const validator = require('validator');
+const {ObjectId} = mongoose.Schema.Types
 
 // define product schema...........
 const productSchema = mongoose.Schema({
@@ -32,6 +33,7 @@ const productSchema = mongoose.Schema({
 
     imageURLs: [{
         type: String,
+        required: true,
         validate: {
             validator: (values) => {
                 if (!Array.isArray(values)) {
