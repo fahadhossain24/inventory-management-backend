@@ -7,69 +7,58 @@ const productSchema = mongoose.Schema({
         required: [true, 'Product name is required'],
         trim: true,
         unique: [true, 'This name already used'],
-        minLength: [3, 'Product name must be minimum 3 character'],
-        maxLength: [80, 'Product name is too large']
+        maxLength: [80, 'Product name is too large'],
+        lowercase: true,
     },
     description: {
         type: String,
         required: [true, 'Product description is required']
     },
-    price: {
-        type: Number,
-        required: [true, 'Product price is required'],
-        min: [0, 'Price will be positive number']
-    },
+   
     unit: {
         type: String,
         required: [true, 'Product unit is required'],
         enum: {
-            values: ['kg', 'litre', 'pics'],
-            message: 'Unit value cant be {VALUE}, must be use kg/litre/pics'
+            values: ['kg', 'litre', 'pics', 'bag'],
+            message: 'Unit value cant be {VALUE}, must be use kg/litre/pics/bag'
         }
     },
-    quantity: {
-        type: Number,
-        required: [true, 'Product quantity is required'],
-        min: [0, 'Quantity can not be negative'],
+
+    imageURLs:[{
+        type: String,
         validate: {
-            validator: (value) => {
-                const isInteger = Number.isInteger(value);
-                if(isInteger){
-                    return true;
-                }else{
+            validator: (values) => {
+                if(!Array.isArray(values)){
                     return false;
                 }
+                let isValid;
+                values.forEach(url => {
+                    if(!validator.isURL(url)){
+                        isValid = false;
+                    }
+                })
+                return isValid;
             },
-            message: 'Quantity must be an integer'
+            message: 'Please provide valid images url'
         }
-    },
-    status: {
+    }],
+
+    category: {
         type: String,
-        required: [true, 'Product status is required'],
-        enum: {
-            values: ['in-stock', 'out-of-stock', 'discontinued'],
-            message: 'Status can not be {VALUE}'
-        }
+        required: true,
     },
-    // createdAt: {
-    //     type: Date,
-    //     default: Date.now()
-    // },
-    // updatedAt: {
-    //     type: Date,
-    //     default: Date.now()
-    // },
-    // supplier: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Supplier'
-    // },
-    // categories: [{
-    //     name: {
-    //         type: String,
-    //         required: [true, 'Category name is required']
-    //     },
-    //     _id: mongoose.Schema.Types.ObjectId
-    // }]
+
+    brand: {
+        name: {
+            type: String,
+            required: true,
+        },
+        id:{
+            type: Object,
+            ref: 'Brand',
+            required: true,
+        }
+    }
 
 }, {timestamps: true})
 
@@ -81,7 +70,6 @@ productSchema.pre('save', function(next){
 })
 
 
-// create Product model..........
 const Product = mongoose.model('Product', productSchema);
 
 module.exports = Product;
