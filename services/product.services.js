@@ -1,9 +1,14 @@
+const Brand = require("../model/brandSchema");
 const Product = require("../model/productSchema");
 
 
 exports.createProductService = async(data) => {
     const product = new Product(data)
     const result = await product.save();
+    const {_id: productId, brand} = result;
+    const response = await Brand.updateOne({_id : brand.id}, {$push: {products: productId}}, {
+        runValidators: true,
+    })
     return result;
 }
 

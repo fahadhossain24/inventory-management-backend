@@ -124,3 +124,16 @@ exports.deleteProduct = async(req, res, next) => {
         })
     }
 } 
+
+// image upload controller
+exports.imageUpload = async(req, res, next) => {
+    try{
+        res.status(200).json(req.files)
+    }catch(err){
+        res.status(400).json({
+            status: 'failed',
+            message: 'image upload failed',
+            error: err.message,
+        })
+    }
+}

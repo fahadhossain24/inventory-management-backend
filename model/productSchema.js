@@ -49,7 +49,7 @@ const productSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-
+ 
     brand: {
         name: {
             type: String,

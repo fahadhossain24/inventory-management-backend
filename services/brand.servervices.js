@@ -7,7 +7,7 @@ exports.createBrandService = async(data) => {
 }
 
 exports.getBrandService = async() => {
-    const result = await Brand.find({});
+    const result = await Brand.find({}).sort({createdAt: -1});
     return result;
 }
 

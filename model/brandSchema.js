@@ -11,7 +11,7 @@ const brandSchema = mongoose.Schema({
         unique: true,
         maxLength: [100, 'Brand name must be less than 100 charecter'],
         lowercase: true,
-    },
+    }, 
     description: String,
     email: {
         type: String,
@@ -23,10 +23,10 @@ const brandSchema = mongoose.Schema({
         validate: [validator.isURL, 'please provide a valid url']
     },
     location: String,
-    product:{
+    products:[{
         type: ObjectId,
         ref: 'Product',
-    },
+    }],
     suppliers: {
         name: String,
         contactNumber: String,
