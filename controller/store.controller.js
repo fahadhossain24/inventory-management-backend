@@ -62,7 +62,6 @@ exports.updateStoreById = async(req, res, next) => {
             return res.status(400).json({
                 status: 'failed',
                 message: 'store couldn\'t update by id',
-                error: err.message,
             })
         }
         res.status(200).json({
