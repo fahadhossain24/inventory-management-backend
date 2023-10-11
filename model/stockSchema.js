@@ -2,13 +2,8 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const {ObjectId} = mongoose.Schema.Types
 
-// define product schema...........
-const productSchema = mongoose.Schema({
-    productId: {
-        type: ObjectId,
-        required: true,
-        ref: 'Product'
-    },
+// define stock schema...........
+const stockSchema = mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Product name is required'],
@@ -20,6 +15,12 @@ const productSchema = mongoose.Schema({
     description: {
         type: String,
         required: [true, 'Product description is required']
+    },
+
+    product: {
+        type: ObjectId,
+        required: true,
+        ref: 'Product'
     },
 
     unit: {
@@ -34,21 +35,7 @@ const productSchema = mongoose.Schema({
     imageURLs: [{
         type: String,
         required: true,
-        validate: {
-            validator: (values) => {
-                if (!Array.isArray(values)) {
-                    return false;
-                }
-                let isValid;
-                values.forEach(url => {
-                    if (!validator.isURL(url)) {
-                        isValid = false;
-                    }
-                })
-                return isValid;
-            },
-            message: 'Please provide valid images url'
-        }
+        validate: [validator.isURL, 'Please provide valid images url']
     }],
 
     price: {
@@ -74,7 +61,7 @@ const productSchema = mongoose.Schema({
             required: true,
         },
         id: {
-            type: Object,
+            type: ObjectId,
             ref: 'Brand',
             required: true,
         }
@@ -96,7 +83,7 @@ const productSchema = mongoose.Schema({
             required: [true, 'Store name is required'],
             lowercase: true,
             enum: {
-                values: ['Dhaka', 'Chattogram', 'Rajshahi', 'Rangpur', 'Khulna', 'Barisal', 'Sylhet', 'Mymensing'],
+                values: ['dhaka', 'chattogram', 'rajshahi', 'rangpur', 'khulna', 'barisal', 'sylhet', 'mymensing'],
                 message: '{VALUE} is not a valid name as store name',
             }
         },
@@ -121,7 +108,7 @@ const productSchema = mongoose.Schema({
 
 }, { timestamps: true })
 
-productSchema.pre('save', function (next) {
+stockSchema.pre('save', function (next) {
     if (this.quantity === 0) {
         this.status = 'out-of-stock';
     }
@@ -129,6 +116,6 @@ productSchema.pre('save', function (next) {
 })
 
 
-const Product = mongoose.model('Product', productSchema);
+const Stock = mongoose.model('Stock', stockSchema);
 
-module.exports = Product;
+module.exports = Stock;

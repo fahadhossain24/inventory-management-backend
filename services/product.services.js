@@ -14,7 +14,7 @@ exports.createProductService = async(data) => {
 
 exports.getProductService = async(filters, queries) => {
     const result = await Product
-    .find(filters)
+    .find({})
     .skip(queries.skip)
     .limit(queries.limit)
     .select(queries.fields)

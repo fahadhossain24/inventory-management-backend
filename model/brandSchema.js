@@ -27,14 +27,14 @@ const brandSchema = mongoose.Schema({
         type: ObjectId,
         ref: 'Product',
     }],
-    suppliers: {
+    suppliers: [{
         name: String,
         contactNumber: String,
         id:{
             type: ObjectId,
             ref: 'Supplier'
         }
-    },
+    }],
     status: {
         type: String,
         enum: {

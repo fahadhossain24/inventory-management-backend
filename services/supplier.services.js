@@ -1,7 +1,14 @@
 const Supplier = require("../model/supplierSchema")
+const Brand = require("../model/brandSchema")
 
 exports.createSupplierService = async(data) => {
     const result = await Supplier.create(data);
+    if(result._id){
+        const {_id: supplierId, brand} = result;
+        await Brand.updateOne({_id: brand.id}, {$push: {suppliers: supplierId}}, {
+            runValidators: true,
+        })
+    }
     return result;
 }
 
