@@ -1,4 +1,5 @@
 const authServices = require("../services/auth.services");
+const sendEmail = require("../utils/sendMail");
 const { genarateToken } = require("../utils/token");
 
 //signup...........
@@ -11,6 +12,26 @@ exports.signUp = async (req, res) => {
                 status: 'failed',
                 error: 'sign up failed',
             })
+        }
+
+
+        const token = await user.emailConfirmationToken();
+
+        await user.save({validateBeforeSave: false})
+
+        // send email varification mail
+        const info = await sendEmail(
+            user.email,
+            'Verify your account',
+            `
+                Thank you for sing up
+                Please Click this verify button for verify your account
+                <a href='${req.protocol}://${req.get('host')}${req.originalUrl}/confirmation/${token}' target='_blank'>Verify</a>
+            `
+            );
+        
+        if(!info.messageId){
+            console.log('email not sent')
         }
 
         res.status(200).json({
@@ -26,6 +47,31 @@ exports.signUp = async (req, res) => {
             error: error.message,
         })
     }
+}
+
+exports.emailConfirmation = async(req, res) => {
+    const userToken = req.params.token
+    const user = await authServices.emailConfirmationService(userToken);
+    if(!user){
+        return res.status(403).json({
+            status: 'failed',
+            error: 'invalid token. request for send again email confirmation mail'
+        })
+    }
+    const expired = new Date() > new Date(user?.confirmationTokenExpires);
+    if(expired){
+        return res.status(403).json({
+            status: 'failed',
+            error: 'Token link expired. request for send again confirmaiton mail'
+        })
+    }
+    user.status = 'active';
+    user.confirmationToken = undefined;
+    user.confirmationTokenExpires = undefined;
+
+    user.save({validateBeforeSave: false})
+
+    res.status(201).json({message: 'Your email varified. Now your account is active'})
 }
 
 //login................
@@ -91,7 +137,7 @@ exports.login = async (req, res) => {
         const token = genarateToken(user)
 
         // remove password from user object.
-        const {password: pwd , ...withoutPassword} = user.toObject()
+        const { password: pwd, ...withoutPassword } = user.toObject()
 
         res.status(200).json({
             status: 'success',
@@ -113,10 +159,10 @@ exports.login = async (req, res) => {
 
 
 // get user
-exports.getUser = async(req, res) => {
+exports.getUser = async (req, res) => {
     try {
         const user = await authServices.getUserByEmailService(req.user?.email);
-        const {password, ...withoutPassword} = user.toObject()
+        const { password, ...withoutPassword } = user.toObject()
         res.status(200).json({
             status: 'success',
             message: 'user retrive success',

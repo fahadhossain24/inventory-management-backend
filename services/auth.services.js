@@ -5,6 +5,11 @@ exports.signUpService = async(data) => {
     return result;
 }
 
+exports.emailConfirmationService = async(token) => {
+    const result = await User.findOne({confirmationToken: token});
+    return result;
+}
+
 exports.getUserByEmailService = async(email) => {
     const result = await User.findOne({email});
     return result;

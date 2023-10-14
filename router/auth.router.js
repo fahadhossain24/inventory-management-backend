@@ -7,6 +7,8 @@ const router = express.Router();
 router.route('/signup')
     .post(authController.signUp)
 
+router.get('/signup/confirmation/:token', authController.emailConfirmation)
+
 router.route('/login')
     .post(authController.login)
 
