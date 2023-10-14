@@ -5,10 +5,11 @@ exports.signUpService = async(data) => {
     return result;
 }
 
-exports.loginService = async(email) => {
+exports.getUserByEmailService = async(email) => {
     const result = await User.findOne({email});
     return result;
 }
+
 
 exports.getAllUserService = async() => {
     const results = await User.find();

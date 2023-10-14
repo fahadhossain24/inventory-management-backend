@@ -55,7 +55,7 @@ exports.login = async (req, res) => {
         }
 
         // load user by email and if no user then send res
-        const user = await authServices.loginService(email);
+        const user = await authServices.getUserByEmailService(email);
 
         if (!user) {
             return res.status(401).json({
@@ -115,7 +115,13 @@ exports.login = async (req, res) => {
 // get user
 exports.getUser = async(req, res) => {
     try {
-        res.send(req.user)
+        const user = await authServices.getUserByEmailService(req.user?.email);
+        const {password, ...withoutPassword} = user.toObject()
+        res.status(200).json({
+            status: 'success',
+            message: 'user retrive success',
+            data: withoutPassword,
+        })
     } catch (error) {
         res.status(400).json({
             status: 'failed',
